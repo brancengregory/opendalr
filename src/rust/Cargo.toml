@@ -1,0 +1,19 @@
+[package]
+name = 'opendalr'
+publish = false
+version = '0.1.0'
+edition = '2021'
+rust-version = '1.65'
+
+[lib]
+crate-type = [ 'staticlib' ] # Possibly cdylib for build shared libraries
+name = 'opendalr'
+
+[dependencies]
+extendr-api = "*"
+opendal = { version = "0.41.0", default-features = false, features = [
+  "services-fs",
+  "services-s3",
+  "services-gcs",
+  "layers-blocking"
+]}
