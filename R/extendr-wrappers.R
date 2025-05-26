@@ -50,9 +50,17 @@ OpenDALMetadata$is_dir <- function() .Call(wrap__OpenDALMetadata__is_dir, self)
 
 OpenDALMetadata$cache_control <- function() .Call(wrap__OpenDALMetadata__cache_control, self)
 
+OpenDALMetadata$content_length <- function() .Call(wrap__OpenDALMetadata__content_length, self)
+
+OpenDALMetadata$content_md5 <- function() .Call(wrap__OpenDALMetadata__content_md5, self)
+
+OpenDALMetadata$content_type <- function() .Call(wrap__OpenDALMetadata__content_type, self)
+
+OpenDALMetadata$etag <- function() .Call(wrap__OpenDALMetadata__etag, self)
+
 OpenDALMetadata$content_disposition <- function() .Call(wrap__OpenDALMetadata__content_disposition, self)
 
-OpenDALMetadata$content_length <- function() .Call(wrap__OpenDALMetadata__content_length, self)
+OpenDALMetadata$version <- function() .Call(wrap__OpenDALMetadata__version, self)
 
 #' @export
 `$.OpenDALMetadata` <- function (self, name) { func <- OpenDALMetadata[[name]]; environment(func) <- environment(); func }

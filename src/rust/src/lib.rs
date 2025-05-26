@@ -1,21 +1,13 @@
-use extendr_api::prelude::*;
-use opendal::{BlockingOperator, Operator, Metadata};
-use opendal::services::Fs;
 use anyhow::Result;
-
-fn sanitize_dir_path(path_str: &str) -> String {
-    let mut p = path_str.trim().to_string();
-    if !p.is_empty() && !p.ends_with('/') {
-        p.push('/');
-    }
-    p
-}
+use extendr_api::prelude::*;
+use opendal::services::Fs;
+use opendal::{BlockingOperator, Metadata, Operator, OperatorInfo};
 
 /// Represents metadata for an entry in OpenDAL.
 #[derive(Debug, Clone)]
 #[extendr]
 pub struct OpenDALMetadata {
-    meta: Metadata
+    meta: Metadata,
 }
 
 impl From<Metadata> for OpenDALMetadata {
@@ -54,7 +46,7 @@ impl OpenDALMetadata {
     //     self.meta.content_range()
     // }
 
-    // pub fn last_modified(&self) -> Option<> {
+    // pub fn last_modified(&self) -> Robj {
     //     self.meta.last_modified()
     // }
 
@@ -73,20 +65,47 @@ impl OpenDALMetadata {
 
 #[extendr]
 struct OpenDALOperator {
-    op: BlockingOperator,
+    op: BlockingOperator
 }
 
-struct OpenDALOperatorInfo {}
+#[extendr]
+struct OpenDALOperatorInfo {
+    info: OperatorInfo
+}
+
+impl From<OperatorInfo> for OpenDALOperatorInfo {
+    fn from(info: OperatorInfo) -> Self {
+        OpenDALOperatorInfo { info }
+    }
+}
+
+#[extendr]
+impl OpenDALOperatorInfo {
+    pub fn scheme(&self) -> String {
+        self.info.scheme().to_string()
+    }
+
+    pub fn root(&self) -> String {
+        self.info.root()
+    }
+
+    pub fn name(&self) -> String {
+        self.info.name()
+    }
+
+    // pub fn full_capability(&self) -> Capability {
+    //     self.info.full_capability()
+    // }
+
+    // pub fn native_capability(&self) -> Capability {
+    //     self.info.native_capability()
+    // }
+}
 
 #[extendr]
 impl OpenDALOperator {
-    fn info() {
-        unimplemented!()
-    }
-
     fn new_fs(root_path: String) -> Result<Self> {
-        let builder = Fs::default()
-          .root(&root_path);
+        let builder = Fs::default().root(&root_path);
 
         let operator = Operator::new(builder)?.finish().blocking();
 
@@ -171,6 +190,11 @@ impl OpenDALOperator {
     //     Ok(Self { op: operator.blocking() })
     // }
 
+    fn info(&self) -> OpenDALOperatorInfo {
+        let info = self.op.info();
+        OpenDALOperatorInfo::from(info)
+    }
+
     // General Paths
     fn exists(&self, path: &str) -> Result<bool> {
         Ok(self.op.exists(path)?)
@@ -188,7 +212,6 @@ impl OpenDALOperator {
     }
 
     fn list(&self, path: &str) -> Result<Vec<String>> {
-
         let entries = self.op.list(path)?;
         Ok(entries
             .into_iter()
@@ -227,6 +250,7 @@ impl OpenDALOperator {
 // Macro to generate R exports
 extendr_module! {
     mod opendalr;
-    impl OpenDALOperator;
     impl OpenDALMetadata;
+    impl OpenDALOperator;
+    impl OpenDALOperatorInfo;
 }
