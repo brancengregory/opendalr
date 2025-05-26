@@ -10,10 +10,10 @@ crate-type = [ 'staticlib' ] # Possibly cdylib for build shared libraries
 name = 'opendalr'
 
 [dependencies]
-extendr-api = "*"
-opendal = { version = "0.41.0", default-features = false, features = [
+anyhow = "^1.0"
+extendr-api = "0.8.0"
+opendal = { version = "^0.53", default-features = false, features = [
   "services-fs",
   "services-s3",
-  "services-gcs",
-  "layers-blocking"
+  "services-gcs"
 ]}

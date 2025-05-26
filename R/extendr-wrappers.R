@@ -10,9 +10,55 @@
 #' @useDynLib opendalr, .registration = TRUE
 NULL
 
-#' Return string `"Hello world!"` to R.
+OpenDALOperator <- new.env(parent = emptyenv())
+
+OpenDALOperator$info <- function() invisible(.Call(wrap__OpenDALOperator__info))
+
+OpenDALOperator$new_fs <- function(root_path) .Call(wrap__OpenDALOperator__new_fs, root_path)
+
+OpenDALOperator$exists <- function(path) .Call(wrap__OpenDALOperator__exists, self, path)
+
+OpenDALOperator$stat <- function(path) .Call(wrap__OpenDALOperator__stat, self, path)
+
+OpenDALOperator$create_dir <- function(path) .Call(wrap__OpenDALOperator__create_dir, self, path)
+
+OpenDALOperator$list <- function(path) .Call(wrap__OpenDALOperator__list, self, path)
+
+OpenDALOperator$read_raw <- function(path) .Call(wrap__OpenDALOperator__read_raw, self, path)
+
+OpenDALOperator$write <- function(path, data) .Call(wrap__OpenDALOperator__write, self, path, data)
+
+OpenDALOperator$delete <- function(path) .Call(wrap__OpenDALOperator__delete, self, path)
+
+OpenDALOperator$copy <- function(source_path, destination_path) .Call(wrap__OpenDALOperator__copy, self, source_path, destination_path)
+
+OpenDALOperator$rename <- function(old_path, new_path) .Call(wrap__OpenDALOperator__rename, self, old_path, new_path)
+
+OpenDALOperator$remove_all <- function(path) .Call(wrap__OpenDALOperator__remove_all, self, path)
+
 #' @export
-hello_world <- function() .Call(wrap__hello_world)
+`$.OpenDALOperator` <- function (self, name) { func <- OpenDALOperator[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.OpenDALOperator` <- `$.OpenDALOperator`
+
+OpenDALMetadata <- new.env(parent = emptyenv())
+
+OpenDALMetadata$is_file <- function() .Call(wrap__OpenDALMetadata__is_file, self)
+
+OpenDALMetadata$is_dir <- function() .Call(wrap__OpenDALMetadata__is_dir, self)
+
+OpenDALMetadata$cache_control <- function() .Call(wrap__OpenDALMetadata__cache_control, self)
+
+OpenDALMetadata$content_disposition <- function() .Call(wrap__OpenDALMetadata__content_disposition, self)
+
+OpenDALMetadata$content_length <- function() .Call(wrap__OpenDALMetadata__content_length, self)
+
+#' @export
+`$.OpenDALMetadata` <- function (self, name) { func <- OpenDALMetadata[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.OpenDALMetadata` <- `$.OpenDALMetadata`
 
 
 # nolint end
