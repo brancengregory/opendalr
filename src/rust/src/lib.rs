@@ -104,7 +104,7 @@ impl OpenDALOperatorInfo {
 
 #[extendr]
 impl OpenDALOperator {
-    fn new_fs(root_path: String) -> Result<Self> {
+    pub fn new_fs(root_path: String) -> Result<Self> {
         let builder = Fs::default().root(&root_path);
 
         let operator = Operator::new(builder)?.finish().blocking();
@@ -154,7 +154,7 @@ impl OpenDALOperator {
     //     Ok(Self { op: operator.blocking() })
     // }
 
-    fn new_gcs(
+    pub fn new_gcs(
         bucket: String,
         credential_path: Option<String>,
         credential_json_content: Option<String>,
@@ -192,28 +192,28 @@ impl OpenDALOperator {
         Ok(Self { op: operator })
     }
 
-    fn info(&self) -> OpenDALOperatorInfo {
+    pub fn info(&self) -> OpenDALOperatorInfo {
         let info = self.op.info();
         OpenDALOperatorInfo::from(info)
     }
 
     // General Paths
-    fn exists(&self, path: &str) -> Result<bool> {
+    pub fn exists(&self, path: &str) -> Result<bool> {
         Ok(self.op.exists(path)?)
     }
 
     /// Retrieves metadata for a path.
-    fn stat(&self, path: &str) -> Result<OpenDALMetadata> {
+    pub fn stat(&self, path: &str) -> Result<OpenDALMetadata> {
         let meta = self.op.stat(path)?;
         Ok(OpenDALMetadata::from(meta))
     }
 
     // Directories
-    fn create_dir(&self, path: &str) -> Result<()> {
+    pub fn create_dir(&self, path: &str) -> Result<()> {
         Ok(self.op.create_dir(path)?)
     }
 
-    fn list(&self, path: &str) -> Result<Vec<String>> {
+    pub fn list(&self, path: &str) -> Result<Vec<String>> {
         let entries = self.op.list(path)?;
         Ok(entries
             .into_iter()
@@ -222,29 +222,29 @@ impl OpenDALOperator {
     }
 
     // Files
-    fn read_raw(&self, path: &str) -> Result<Robj> {
+    pub fn read_raw(&self, path: &str) -> Result<Robj> {
         let content = self.op.read(path)?;
         Ok(Raw::from_bytes(&content.to_vec()).into())
     }
 
-    fn write(&self, path: &str, data: Vec<u8>) -> Result<()> {
+    pub fn write(&self, path: &str, data: Vec<u8>) -> Result<()> {
         let _ = self.op.write(path, data)?;
         Ok(())
     }
 
-    fn delete(&self, path: &str) -> Result<()> {
+    pub fn delete(&self, path: &str) -> Result<()> {
         Ok(self.op.delete(path)?)
     }
 
-    fn copy(&self, source_path: &str, destination_path: &str) -> Result<()> {
+    pub fn copy(&self, source_path: &str, destination_path: &str) -> Result<()> {
         Ok(self.op.copy(source_path, destination_path)?)
     }
 
-    fn rename(&self, old_path: &str, new_path: &str) -> Result<()> {
+    pub fn rename(&self, old_path: &str, new_path: &str) -> Result<()> {
         Ok(self.op.rename(old_path, new_path)?)
     }
 
-    fn remove_all(&self, path: &str) -> Result<()> {
+    pub fn remove_all(&self, path: &str) -> Result<()> {
         Ok(self.op.remove_all(path)?)
     }
 }

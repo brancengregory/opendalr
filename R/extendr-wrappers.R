@@ -10,11 +10,39 @@
 #' @useDynLib opendalr, .registration = TRUE
 NULL
 
+OpenDALMetadata <- new.env(parent = emptyenv())
+
+OpenDALMetadata$is_file <- function() .Call(wrap__OpenDALMetadata__is_file, self)
+
+OpenDALMetadata$is_dir <- function() .Call(wrap__OpenDALMetadata__is_dir, self)
+
+OpenDALMetadata$cache_control <- function() .Call(wrap__OpenDALMetadata__cache_control, self)
+
+OpenDALMetadata$content_length <- function() .Call(wrap__OpenDALMetadata__content_length, self)
+
+OpenDALMetadata$content_md5 <- function() .Call(wrap__OpenDALMetadata__content_md5, self)
+
+OpenDALMetadata$content_type <- function() .Call(wrap__OpenDALMetadata__content_type, self)
+
+OpenDALMetadata$etag <- function() .Call(wrap__OpenDALMetadata__etag, self)
+
+OpenDALMetadata$content_disposition <- function() .Call(wrap__OpenDALMetadata__content_disposition, self)
+
+OpenDALMetadata$version <- function() .Call(wrap__OpenDALMetadata__version, self)
+
+#' @export
+`$.OpenDALMetadata` <- function (self, name) { func <- OpenDALMetadata[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.OpenDALMetadata` <- `$.OpenDALMetadata`
+
 OpenDALOperator <- new.env(parent = emptyenv())
 
-OpenDALOperator$info <- function() invisible(.Call(wrap__OpenDALOperator__info))
-
 OpenDALOperator$new_fs <- function(root_path) .Call(wrap__OpenDALOperator__new_fs, root_path)
+
+OpenDALOperator$new_gcs <- function(bucket, credential_path, credential_json_content, endpoint, default_storage_class, predefined_acl, root) .Call(wrap__OpenDALOperator__new_gcs, bucket, credential_path, credential_json_content, endpoint, default_storage_class, predefined_acl, root)
+
+OpenDALOperator$info <- function() .Call(wrap__OpenDALOperator__info, self)
 
 OpenDALOperator$exists <- function(path) .Call(wrap__OpenDALOperator__exists, self, path)
 
@@ -42,31 +70,19 @@ OpenDALOperator$remove_all <- function(path) .Call(wrap__OpenDALOperator__remove
 #' @export
 `[[.OpenDALOperator` <- `$.OpenDALOperator`
 
-OpenDALMetadata <- new.env(parent = emptyenv())
+OpenDALOperatorInfo <- new.env(parent = emptyenv())
 
-OpenDALMetadata$is_file <- function() .Call(wrap__OpenDALMetadata__is_file, self)
+OpenDALOperatorInfo$scheme <- function() .Call(wrap__OpenDALOperatorInfo__scheme, self)
 
-OpenDALMetadata$is_dir <- function() .Call(wrap__OpenDALMetadata__is_dir, self)
+OpenDALOperatorInfo$root <- function() .Call(wrap__OpenDALOperatorInfo__root, self)
 
-OpenDALMetadata$cache_control <- function() .Call(wrap__OpenDALMetadata__cache_control, self)
-
-OpenDALMetadata$content_length <- function() .Call(wrap__OpenDALMetadata__content_length, self)
-
-OpenDALMetadata$content_md5 <- function() .Call(wrap__OpenDALMetadata__content_md5, self)
-
-OpenDALMetadata$content_type <- function() .Call(wrap__OpenDALMetadata__content_type, self)
-
-OpenDALMetadata$etag <- function() .Call(wrap__OpenDALMetadata__etag, self)
-
-OpenDALMetadata$content_disposition <- function() .Call(wrap__OpenDALMetadata__content_disposition, self)
-
-OpenDALMetadata$version <- function() .Call(wrap__OpenDALMetadata__version, self)
+OpenDALOperatorInfo$name <- function() .Call(wrap__OpenDALOperatorInfo__name, self)
 
 #' @export
-`$.OpenDALMetadata` <- function (self, name) { func <- OpenDALMetadata[[name]]; environment(func) <- environment(); func }
+`$.OpenDALOperatorInfo` <- function (self, name) { func <- OpenDALOperatorInfo[[name]]; environment(func) <- environment(); func }
 
 #' @export
-`[[.OpenDALMetadata` <- `$.OpenDALMetadata`
+`[[.OpenDALOperatorInfo` <- `$.OpenDALOperatorInfo`
 
 
 # nolint end
