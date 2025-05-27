@@ -1,6 +1,6 @@
 use anyhow::Result;
 use extendr_api::prelude::*;
-use opendal::services::Fs;
+use opendal::services::{Fs, Gcs};
 use opendal::{BlockingOperator, Metadata, Operator, OperatorInfo};
 
 /// Represents metadata for an entry in OpenDAL.
@@ -154,41 +154,43 @@ impl OpenDALOperator {
     //     Ok(Self { op: operator.blocking() })
     // }
 
-    // fn new_gcs(
-    //     bucket: String,
-    //     credential_path: Option<String>,
-    //     credential_json_content: Option<String>,
-    //     endpoint: Option<String>,
-    //     default_storage_class: Option<String>,
-    //     predefined_acl: Option<String>,
-    //     root: Option<String>,
-    // ) -> Result<Self> {
-    //     let mut builder = Gcs::default();
-    //     builder.bucket(&bucket);
+    fn new_gcs(
+        bucket: String,
+        credential_path: Option<String>,
+        credential_json_content: Option<String>,
+        endpoint: Option<String>,
+        default_storage_class: Option<String>,
+        predefined_acl: Option<String>,
+        root: Option<String>,
+    ) -> Result<Self> {
+        let mut builder = Gcs::default()
+            .bucket(&bucket);
 
-    //     if let Some(cp) = credential_path {
-    //         builder.credential_path(&cp);
-    //     }
-    //     if let Some(cc_json) = credential_json_content {
-    //         builder.credential(&cc_json);
-    //     }
-    //     if let Some(e) = endpoint {
-    //         builder.endpoint(&e);
-    //     }
-    //     if let Some(dsc) = default_storage_class {
-    //         builder.default_storage_class(&dsc);
-    //     }
-    //     if let Some(acl) = predefined_acl {
-    //         builder.predefined_acl(&acl);
-    //     }
-    //     if let Some(p_root) = root {
-    //         builder.root(&p_root);
-    //     }
+        if let Some(cp) = credential_path {
+            builder = builder.credential_path(&cp);
+        } else if let Some(cc_json) = credential_json_content {
+            builder = builder.credential(&cc_json);
+        }
+    
+        if let Some(ep) = endpoint {
+            builder = builder.endpoint(&ep);
+        }
 
-    //     let operator_builder = Operator::new(builder)?;
-    //     let operator = operator_builder.finish();
-    //     Ok(Self { op: operator.blocking() })
-    // }
+        if let Some(dsc) = default_storage_class {
+            builder = builder.default_storage_class(&dsc);
+        }
+
+        if let Some(acl) = predefined_acl {
+            builder = builder.predefined_acl(&acl);
+        }
+
+        if let Some(r) = root {
+            builder = builder.root(&r);
+        }
+
+        let operator = Operator::new(builder)?.finish().blocking();
+        Ok(Self { op: operator })
+    }
 
     fn info(&self) -> OpenDALOperatorInfo {
         let info = self.op.info();
